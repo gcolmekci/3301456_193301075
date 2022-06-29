@@ -50,118 +50,125 @@ class _RegisterScreenState extends State<RegisterScreen> {
       appBar: MyAppBar(appBarTitle: "Kayıt Ol"),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           child: Form(
             key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isNotEmpty) {
-                      return null;
-                    } else {
-                      return "Bu alanı boş geçmeyiniz";
-                    }
-                  },
-                  keyboardType: TextInputType.name,
-                  controller: _usernameController,
-                  decoration: const InputDecoration(hintText: "Ad Soyad"),
-                ),
-                SizedBox(
-                  height: scrHeight * 0.015,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    bool emailValid = RegExp(
-                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value!);
-                    if (emailValid) {
-                      return null;
-                    } else {
-                      return "Geçerli bir email giriniz";
-                    }
-                  },
-                  keyboardType: TextInputType.emailAddress,
-                  controller: _userMailController,
-                  decoration: const InputDecoration(hintText: "Email Adresi"),
-                ),
-                SizedBox(
-                  height: scrHeight * 0.015,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isNotEmpty) {
-                      return null;
-                    } else {
-                      return "Bir şifre giriniz";
-                    }
-                  },
-                  controller: _passcontroller,
-                  decoration: InputDecoration(
-                      hintText: "Şifre",
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isObscure = !isObscure;
+            child: SingleChildScrollView(
+              child: SizedBox(
+                height: scrHeight - MediaQuery.of(context).viewInsets.bottom,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      validator: (value) {
+                        if (value!.isNotEmpty) {
+                          return null;
+                        } else {
+                          return "Bu alanı boş geçmeyiniz";
+                        }
+                      },
+                      keyboardType: TextInputType.name,
+                      controller: _usernameController,
+                      decoration: const InputDecoration(hintText: "Ad Soyad"),
+                    ),
+                    SizedBox(
+                      height: scrHeight * 0.015,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        bool emailValid = RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value!);
+                        if (emailValid) {
+                          return null;
+                        } else {
+                          return "Geçerli bir email giriniz";
+                        }
+                      },
+                      keyboardType: TextInputType.emailAddress,
+                      controller: _userMailController,
+                      decoration:
+                          const InputDecoration(hintText: "Email Adresi"),
+                    ),
+                    SizedBox(
+                      height: scrHeight * 0.015,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value!.isNotEmpty) {
+                          return null;
+                        } else {
+                          return "Bir şifre giriniz";
+                        }
+                      },
+                      controller: _passcontroller,
+                      decoration: InputDecoration(
+                          hintText: "Şifre",
+                          suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isObscure = !isObscure;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.remove_red_eye,
+                                color: isObscure ? blueButtonColor : tealColor,
+                              ))),
+                      obscureText: isObscure,
+                    ),
+                    SizedBox(
+                      height: scrHeight * 0.015,
+                    ),
+                    TextFormField(
+                      validator: (value) {
+                        if (value!.isNotEmpty &&
+                            value == _passcontroller.text) {
+                          return null;
+                        } else if (value != _passcontroller.text) {
+                          return "Şifreniz uyuşmuyor";
+                        }
+                      },
+                      controller: _passConfirmcontroller,
+                      obscureText: isObscure,
+                      decoration: InputDecoration(
+                          hintText: "Şifre(tekrar)",
+                          suffixIcon: IconButton(
+                              onPressed: () {
+                                setState(() {
+                                  isObscure = !isObscure;
+                                });
+                              },
+                              icon: Icon(
+                                Icons.remove_red_eye,
+                                color: isObscure ? blueButtonColor : tealColor,
+                              ))),
+                    ),
+                    SizedBox(
+                      height: scrHeight * 0.015,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            MyLoader.showLoader(context);
+                            registerRequest(_userMailController.text,
+                                    _passcontroller.text)
+                                .whenComplete(() {
+                              Navigator.pop(context);
                             });
-                          },
-                          icon: Icon(
-                            Icons.remove_red_eye,
-                            color: isObscure ? blueButtonColor : tealColor,
-                          ))),
-                  obscureText: isObscure,
+                          }
+                        },
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(
+                              vertical: scrHeight * 0.01,
+                              horizontal: scrWidht * 0.2),
+                          child: const Text("Kayıt ol"),
+                        )),
+                    SizedBox(
+                      height: scrHeight * 0.015,
+                    ),
+                  ],
                 ),
-                SizedBox(
-                  height: scrHeight * 0.015,
-                ),
-                TextFormField(
-                  validator: (value) {
-                    if (value!.isNotEmpty && value == _passcontroller.text) {
-                      return null;
-                    } else if (value != _passcontroller.text) {
-                      return "Şifreniz uyuşmuyor";
-                    }
-                  },
-                  controller: _passConfirmcontroller,
-                  obscureText: isObscure,
-                  decoration: InputDecoration(
-                      hintText: "Şifre(tekrar)",
-                      suffixIcon: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              isObscure = !isObscure;
-                            });
-                          },
-                          icon: Icon(
-                            Icons.remove_red_eye,
-                            color: isObscure ? blueButtonColor : tealColor,
-                          ))),
-                ),
-                SizedBox(
-                  height: scrHeight * 0.015,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        MyLoader.showLoader(context);
-                        registerRequest(
-                                _userMailController.text, _passcontroller.text)
-                            .whenComplete(() {
-                          Navigator.pop(context);
-                        });
-                      }
-                    },
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(
-                          vertical: scrHeight * 0.01,
-                          horizontal: scrWidht * 0.2),
-                      child: const Text("Kayıt ol"),
-                    )),
-                SizedBox(
-                  height: scrHeight * 0.015,
-                ),
-              ],
+              ),
             ),
           ),
         ),

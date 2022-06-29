@@ -3,11 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:school_project/const_files/colors.dart';
-import 'package:school_project/home/home_screen.dart';
+import 'package:school_project/home/admin_screen.dart';
 import 'package:school_project/home/user_screen.dart';
 import 'package:school_project/models/user.dart';
+import 'package:school_project/services/database_helper.dart';
 import 'package:school_project/widgets/appbar.dart';
 import 'package:school_project/widgets/my_loader.dart';
+import 'package:sqflite/sqflite.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -22,11 +24,19 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passcontroller = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+  DatabaseHelper databaseHelper = DatabaseHelper();
+  Future getPath() async {
+    databaseHelper.copyDatabase();
+    await getDatabasesPath().then((value) {
+      print(value);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     scrHeight = MediaQuery.of(context).size.height;
     scrWidht = MediaQuery.of(context).size.width;
+    // print(getPath());
     return Scaffold(
       appBar: MyAppBar(appBarTitle: "Giriş Yap"),
       backgroundColor: primaryColor,
@@ -35,73 +45,80 @@ class _LoginScreenState extends State<LoginScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Form(
             key: _formKey,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  keyboardType: TextInputType.emailAddress,
-                  validator: (value) {
-                    bool emailValid = RegExp(
-                            r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                        .hasMatch(value!);
-                    if (emailValid) {
-                      return null;
-                    } else {
-                      return "Geçerli bir email giriniz";
-                    }
-                  },
-                  controller: _usernameController,
-                  decoration: const InputDecoration(hintText: "Email Adresi"),
-                ),
-                SizedBox(
-                  height: scrHeight * 0.015,
-                ),
-                TextFormField(
-                  keyboardType: TextInputType.visiblePassword,
-                  validator: (value) {
-                    if (value!.isNotEmpty) {
-                      return null;
-                    } else {
-                      return "Bir şifre giriniz";
-                    }
-                  },
-                  controller: _passcontroller,
-                  decoration: const InputDecoration(hintText: "Şifre"),
-                ),
-                SizedBox(
-                  height: scrHeight * 0.015,
-                ),
-                ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        MyLoader.showLoader(context);
-                        loginRequest(
-                                _usernameController.text, _passcontroller.text)
-                            .then((value) {
-                          Navigator.pop(context);
-                          if (value == 3) {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const AdminScreen()),
-                              (route) => false,
-                            );
-                          } else if (value == 1) {
-                            Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const UserScreen()),
-                              (route) => false,
-                            );
+            child: SingleChildScrollView(
+              child: SizedBox(
+                height: scrHeight - MediaQuery.of(context).viewInsets.bottom,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (value) {
+                        bool emailValid = RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value!);
+                        if (emailValid) {
+                          return null;
+                        } else {
+                          return "Geçerli bir email giriniz";
+                        }
+                      },
+                      controller: _usernameController,
+                      decoration:
+                          const InputDecoration(hintText: "Email Adresi"),
+                    ),
+                    SizedBox(
+                      height: scrHeight * 0.015,
+                    ),
+                    TextFormField(
+                      keyboardType: TextInputType.visiblePassword,
+                      validator: (value) {
+                        if (value!.isNotEmpty) {
+                          return null;
+                        } else {
+                          return "Bir şifre giriniz";
+                        }
+                      },
+                      controller: _passcontroller,
+                      decoration: const InputDecoration(hintText: "Şifre"),
+                    ),
+                    SizedBox(
+                      height: scrHeight * 0.015,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          if (_formKey.currentState!.validate()) {
+                            MyLoader.showLoader(context);
+                            loginRequest(_usernameController.text,
+                                    _passcontroller.text)
+                                .then((value) {
+                              Navigator.pop(context);
+                              if (value == 3) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AdminScreen()),
+                                  (route) => false,
+                                );
+                              } else if (value == 1) {
+                                Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const UserScreen()),
+                                  (route) => false,
+                                );
+                              }
+                            });
                           }
-                        });
-                      }
-                    },
-                    child: const Text("Giriş Yap")),
-                SizedBox(
-                  height: scrHeight * 0.02,
+                        },
+                        child: const Text("Giriş Yap")),
+                    SizedBox(
+                      height: scrHeight * 0.02,
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),

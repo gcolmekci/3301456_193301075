@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:school_project/authentication/welcome.dart';
 import 'package:school_project/const_files/colors.dart';
+import 'package:school_project/detail_screen/book_detail.dart';
 import 'package:school_project/detail_screen/local_list.dart';
 import 'package:school_project/models/user.dart';
 import 'package:school_project/services/database_helper.dart';
@@ -28,6 +31,21 @@ class _UserScreenState extends State<UserScreen> {
       appBar: AppBar(
         title: const Text("Kütüpnahe Kitapları"),
         centerTitle: true,
+        actions: [
+          IconButton(
+              onPressed: () async {
+                MyLoader.showLoader(context);
+                await FirebaseAuth.instance.signOut();
+                Navigator.pop(context);
+                await Future.delayed(Duration.zero);
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WelcomeScreen()),
+                    (route) => false);
+              },
+              icon: Icon(Icons.logout))
+        ],
       ),
       drawer: Drawer(
         child: SafeArea(
@@ -94,6 +112,23 @@ class _UserScreenState extends State<UserScreen> {
                             borderRadius: BorderRadius.circular(10),
                             color: tealColor),
                         child: ListTile(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BookDetailScreen(
+                                          bookName: snapshot.data!.docs[index]
+                                              ['bookName'],
+                                          authorName: snapshot.data!.docs[index]
+                                              ['authorName'],
+                                          publicatioonDate: snapshot.data!
+                                              .docs[index]['publicationDate'],
+                                          paperCount: snapshot.data!.docs[index]
+                                              ['paperCount'],
+                                          description: snapshot
+                                              .data!.docs[index]['description'],
+                                        )));
+                          },
                           onLongPress: () {
                             showSureDialog(
                                 snapshot.data!.docs[index]['bookName'],
@@ -143,7 +178,9 @@ class _UserScreenState extends State<UserScreen> {
         context: context,
         builder: (context) => AlertDialog(
               title: Text(
-                  "$bookName Kitabını favorinize eklemek istediğinize Emin misiniz?"),
+                "$bookName Kitabını favorinize eklemek istediğinize Emin misiniz?",
+                textAlign: TextAlign.center,
+              ),
               actions: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -184,12 +221,12 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Future saveWithSqflite(String bookName, String authorName,
-      String publicatioonDate, String paperCount) async {
+      String publicationDate, String paperCount) async {
     try {
       databaseHelper.insertCurrentBookData({
         "bookName": bookName,
         "authorName": authorName,
-        "publicationDate": publicatioonDate,
+        "publicationDate": publicationDate,
         "paperCount": paperCount
       });
       return true;

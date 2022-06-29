@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/services.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -18,6 +21,7 @@ class DatabaseHelper {
         'paperCount INTEGER'
         ');',
       );
+      copyDatabase();
     } catch (e) {
       rethrow;
     }
@@ -29,6 +33,21 @@ class DatabaseHelper {
       await db!.insert("my_books", data);
     } catch (e) {
       rethrow;
+    }
+  }
+
+  Future<void> copyDatabase() async {
+    final String databasePath = await getDatabasesPath();
+    final String path = join(databasePath, 'dic.db');
+    final File file = File(path);
+    if (!file.existsSync()) {
+      ByteData data = await rootBundle.load(join('assets', 'dic.db'));
+      List<int> bytes =
+          data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
+      await file.writeAsBytes(bytes, flush: true);
+      print('database successfully copied to $path');
+    } else {
+      print('database already exist');
     }
   }
 

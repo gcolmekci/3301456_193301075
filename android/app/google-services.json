@@ -1,41 +1,70 @@
 {
   "project_info": {
-    "project_number": "912675556586",
-    "project_id": "abstract-mode-307218",
-    "storage_bucket": "abstract-mode-307218.appspot.com"
+    "project_number": "425233461088",
+    "project_id": "gc-ebac2",
+    "storage_bucket": "gc-ebac2.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:912675556586:android:7b80c600bd784245de9b93",
+        "mobilesdk_app_id": "1:425233461088:android:6f8e5327e97749360e7805",
         "android_client_info": {
-          "package_name": "com.example.school_project"
+          "package_name": "com.example.kutuphane_app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "912675556586-mg3herstu37uh9dcufci4tlfvksu445i.apps.googleusercontent.com",
+          "client_id": "425233461088-9lkag95ornbgp7s4mnb0un7av4pbnh5s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.school_project",
+            "package_name": "com.example.kutuphane_app",
             "certificate_hash": "338409b358b240bbfee8dfb9d2d09ab267372720"
           }
         },
         {
-          "client_id": "912675556586-71kll9ol25ci0kn2aemha1j3i64kgp85.apps.googleusercontent.com",
+          "client_id": "425233461088-r073l5qr83a27oluiu8jepsh5dnrhn0l.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCchzfRVmtXtBPxF26K7tk1NRrGru8fh_8"
+          "current_key": "AIzaSyAXvnrS8ibzUMuHdyw0Gd5h4Yvn0ikWzQg"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "912675556586-71kll9ol25ci0kn2aemha1j3i64kgp85.apps.googleusercontent.com",
+              "client_id": "425233461088-r073l5qr83a27oluiu8jepsh5dnrhn0l.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:425233461088:android:332c870414beadc60e7805",
+        "android_client_info": {
+          "package_name": "com.example.school_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "425233461088-r073l5qr83a27oluiu8jepsh5dnrhn0l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAXvnrS8ibzUMuHdyw0Gd5h4Yvn0ikWzQg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "425233461088-r073l5qr83a27oluiu8jepsh5dnrhn0l.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
